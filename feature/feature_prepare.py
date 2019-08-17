@@ -32,14 +32,14 @@ class DataSetBase():
             self.label_dic = self.parse_label_file()
         else:
             for file_name,file_dir in self.file_dic["file_dic"][self.label_file_type].items():
-                with open(file_dir,'r') as f:
+                with open(file_dir,'r',encoding='utf-8') as f:
                     lines = f.readlines()
                 label_dic[file_name] = self.parse_label_files(lines)
             self.label_dic = label_dic
         
     def parse_label_file(self,labelsplit = ' '):
         label_dic = {}
-        with open(self.label_file,'r') as f:
+        with open(self.label_file,'r',encoding='utf-8') as f:
             lines = f.readlines()
             for line in lines:
                 file_name = line.split(labelsplit)[0]
@@ -60,7 +60,7 @@ class thchs30(DataSetBase):
         return_dic = {}
         if len(lines) ==1:
             lines[0].strip('.')
-            with open(self.dataset_dir+lines[0].strip('.').strip('\n'),'r' ) as f:
+            with open(self.dataset_dir+lines[0].strip('.').strip('\n'),'r' ,encoding='utf-8') as f:
                 lines = f.readlines()
         return_dic['chinese'] = lines[0]
         return_dic['pinyin'] = lines[1]
@@ -93,14 +93,14 @@ class primewords(DataSetBase):
         return super().__init__( dataset_dir, label_file,label_file_type)
     def parse_label_file(self,labelsplit = ' '):
         label_dic = {}
-        with open(self.label_file,'r') as f:
+        with open(self.label_file,'r',encoding='utf-8') as f:
             lines = f.readlines()
             label_ls = json.loads(lines[0])
-            for label_dic in  label_ls:
-                label_name = label_dic["file"].split('.')[0]
+            for signle_dic in  label_ls:
+                label_name = signle_dic["file"].split('.')[0]
                 label_dic[label_name] = {
-                    'chinese':label_dic["text"],
-                    'pinyin':Chinese2Pinyin(label_dic["text"])
+                    'chinese':signle_dic["text"],
+                    'pinyin':Chinese2Pinyin(signle_dic["text"])
                 }
             return label_dic
 
@@ -111,7 +111,7 @@ class MagicData(DataSetBase):
         return super().__init__( dataset_dir, label_file,label_file_type)
     def parse_label_file(self,labelsplit = ' '):
         label_dic = {}
-        with open(self.label_file,'r') as f:
+        with open(self.label_file,'r',encoding='utf-8') as f:
             lines = f.readlines()
             for line in lines:
                 line_ls = line.split(labelsplit)
