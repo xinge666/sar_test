@@ -52,5 +52,5 @@ def get_file_dict_for_different_type(file_dir):
     dic_root['file_types'] = list(file_types)
     return dic_root
 if __name__=="__main__":
-    dic_root = get_file_dict_for_different_type("../utils")
+    dic_root = get_file_dict_for_different_type("../dataset/data_thchs30/")
 
