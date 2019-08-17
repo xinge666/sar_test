@@ -47,6 +47,7 @@ def get_file_dict_for_different_type(file_dir):
     dic_root['train'] = train_files
     dic_root['dev'] = dev_files
     dic_root['test'] = test_files
+    undivided = set(undivided) - set(train_files)- set(dev_files)- set(test_files)
     dic_root['undivided'] = undivided
     dic_root['file_types'] = list(file_types)
     return dic_root
