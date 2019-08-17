@@ -2,18 +2,28 @@ import os
 
 def get_file_name_ls_from_dir(file_dir):
     for root, dirs, files in os.walk(file_dir):
+        if not files:
+            return []
         return files
 
 def get_child_dir_ls_from_dir(file_dir):
     for root, dirs, files in os.walk(file_dir):
+        if  not dirs:
+            return []
         return dirs
 
-def get_all_files_name_ls(file_dir,flie_ls = []):
-    now_files = [file_dir+"/"+ file for file in get_file_name_ls_from_dir(file_dir) if not file[0] =="." ]
-    flie_ls.extend(now_files)
-    for dir in  get_child_dir_ls_from_dir(file_dir):
-        flie_ls.extend(get_all_files_name_ls(file_dir+"/"+dir,flie_ls))
-    return flie_ls
+def get_all_files_name_ls(file_dir):
+    file_dir_queue = [file_dir+ "/"+ dir_ for dir_ in get_child_dir_ls_from_dir(file_dir) if not dir_[0] =="." ]
+    files_ls = [file_dir+"/"+ file for file in get_file_name_ls_from_dir(file_dir) if not file[0] =="." ]
+    while len(file_dir_queue)>0:
+        dir_ = file_dir_queue.pop()
+        #print([dir_+"/"+ file for file in get_file_name_ls_from_dir(dir_) if not file[0] =="." ])
+        for file_name in [dir_+"/"+ file for file in get_file_name_ls_from_dir(dir_) if not file[0] =="." ]:
+            files_ls.append(file_name)
+        for dir_name in [dir_+"/"+ file for file in get_child_dir_ls_from_dir(dir_) if not file[0] =="." ]:
+            file_dir_queue.append(dir_name)
+
+    return files_ls
 
 def get_file_dict_for_different_type(file_dir):
     file_ls = get_all_files_name_ls(file_dir)
