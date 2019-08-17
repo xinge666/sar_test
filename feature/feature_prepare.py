@@ -9,17 +9,55 @@ from utils.dir_op import get_file_name_ls_from_dir,get_child_dir_ls_from_dir,\
     get_file_dict_for_different_type
 
 class DataSetBase():
-    def __init__(self, dataset_dir, label_file):
+    def __init__(self, dataset_dir, label_file = None,label_file_type = 'trn'):
+        if dataset_dir[-1]!='/':
+            dataset_dir = dataset_dir+'/'
         self.dataset_dir = dataset_dir
         self.label_file = label_file
+        self.label_file_type= label_file_type
+        self.get_child_file_dict()
     def get_child_file_dict(self,root_dir):
-        file_dic = get_file_dict_for_different_type(root_dir)
+        self.file_dic = get_file_dict_for_different_type(root_dir)
 
+    def read_label_file(self):
+        label_dic = {}
+        if self.label_file:
+            self.label_dic = self.parse_label_file()
+        else:
+            for file_name,file_dir in self.file_dic[self.label_file_type].items():
+                with open(file_dir,'r') as f:
+                    lines = f.readlines()
+                label_dic[file_name] = self.parse_label_files(lines)
+            self.label_dic = label_dic
+        
+    def parse_label_file(self,labelsplit = ' '):
+        label_dic = {}
+        with open(self.label_file,'r') as f:
+            lines = f.readlines()
+            for line in lines:
+                file_name = line.split(labelsplit)[0]
+                label = line[len(file_name):].strip(labelsplit).strip('\n') 
+                label_dic[file_name] = {
+                    'chinese':label,
+                    'pinyin':Chinese2Pinyin(label)
+                }
+            return label_dic
+    #@abstractmethod
+    def parse_label_files(self,lines):
+        pass
 
 class thchs30(DataSetBase):
-    def __init__(self, *args, **kwargs):
-        return super().__init__(*args, **kwargs)
-
+    def __init__(self, dataset_dir, label_file = None,label_file_type = 'trn'):
+        return super().__init__( dataset_dir, label_file,label_file_type)
+    def parse_label_files(self,lines):
+        return_dic = {}
+        if len(lines) ==1:
+            lines[0].strip('.')
+            with open(self.dataset_dir+lines[0].strip('.'),'r' ) as f:
+                lines = f.readlines()
+        return_dic['chinese'] = lines[0]
+        return_dic['pinyin'] = lines[1]
+        return return_dic
 class aishell(DataSetBase):
     def __init__(self, *args, **kwargs):
         return super().__init__(*args, **kwargs)
@@ -49,4 +87,8 @@ class DatasetPrepare:
             self.dataset_root_dir = sys.path[0] +"/../train_set"
     
     def get_wav_and_label(self):
-        for file in get_file_name_ls_from_dir(self.train_dir)
+        for file in get_file_name_ls_from_dir(self.train_dir):
+            pass
+
+if __name__=="__main__":
+    print(Chinese2Pinyin("你好 我是 顾家新"))
