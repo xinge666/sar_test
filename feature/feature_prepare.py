@@ -65,6 +65,11 @@ class aishell(DataSetBase):
 class ST_CMDS(DataSetBase):
     def __init__(self, *args, **kwargs):
         return super().__init__(*args, **kwargs)
+    def parse_label_files(self,lines):
+        return_dic = {}
+        return_dic['chinese'] = lines[0]
+        return_dic['pinyin'] = Chinese2Pinyin(lines[0])
+
 
 class DatasetPrepare:
     def __init__(self,dataset_name):
