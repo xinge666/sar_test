@@ -52,8 +52,10 @@ class DataSetBase():
             if(symbol != ''):
                 return self.list_symbol.index(symbol)
         except:
-            import pdb
-            pdb.set_trace()
+            #import pdb
+            #pdb.set_trace()
+            print(symbol)
+            return -10
         return self.SymbolNum
 
     def get_child_file_dict(self,root_dir):
@@ -90,15 +92,34 @@ class DataSetBase():
                     lines = f.readlines()
                 label_dic[file_name] = self.parse_label_files(lines)
             self.label_dic = label_dic
+        bad_sample_ls = []
         for file_name in self.label_dic.keys():
             code_ls = []
-            for py in self.label_dic[file_name]['pinyin'].split(' '):
-                if py in """,.:;?，!。：；“‘’”？！'"
-                    """:
-                    continue
-                code_ls.append(self.SymbolToNum(py))
-            self.label_dic[file_name]["code"] = code_ls
-        
+            bad_sample = False
+            try:
+                for py in self.label_dic[file_name]['pinyin'].split(' '):
+                    if py in """,.:;?，!。：；“‘’”？！'"
+                        """:
+                        continue
+                    code = self.SymbolToNum(py)
+                    if code == -10:
+                        #print(py)
+                        #self.label_dic.pop(file_name)
+                        bad_sample = True
+                        break 
+                    code_ls.append(self.SymbolToNum(py))
+                if bad_sample:
+                    bad_sample_ls.append(file_name)
+                else:
+                    self.label_dic[file_name]["code"] = code_ls
+            except:
+                bad_sample_ls.append(file_name)
+        self.bad_sample = bad_sample_ls
+        self.file_dic["train"] = list(set(self.file_dic["train"])-set(bad_sample_ls))
+        self.file_dic["dev"] = list(set(self.file_dic["dev"])-set(bad_sample_ls))
+        self.file_dic["test"] = list(set(self.file_dic["test"])-set(bad_sample_ls))
+        self.file_dic["undivided"] = list(set(self.file_dic["undivided"])-set(bad_sample_ls))
+
     def parse_label_file(self,labelsplit = ' '):
         """
         如果是单个label文件，解析该文件（子类重写该函数）
