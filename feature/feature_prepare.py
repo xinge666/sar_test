@@ -31,7 +31,7 @@ class DataSetBase():
         加载拼音符号列表，用于标记符号
         返回一个列表list类型变量
         '''
-        txt_obj=open('dict.txt','r',encoding='UTF-8') # 打开文件并读入
+        txt_obj=open(sys.path[0]+'/dict.txt','r',encoding='UTF-8') # 打开文件并读入
         txt_text=txt_obj.read()
         txt_lines=txt_text.split('\n') # 文本分割
         list_symbol=[] # 初始化符号列表
@@ -123,8 +123,8 @@ class thchs30(DataSetBase):
             lines[0].strip('.')
             with open(self.dataset_dir+lines[0].strip('.').strip('\n'),'r' ,encoding='utf-8') as f:
                 lines = f.readlines()
-        return_dic['chinese'] = lines[0]
-        return_dic['pinyin'] = lines[1]
+        return_dic['chinese'] = lines[0].strip('\n')
+        return_dic['pinyin'] = lines[1].strip('\n')
         return return_dic
 class aidatatang(DataSetBase):
     def __init__(self, dataset_dir = sys.path[0]+"/../dataset/aidatatang_200zh", 
@@ -145,8 +145,8 @@ class ST_CMDS(DataSetBase):
         return super().__init__( dataset_dir, label_file,label_file_type)
     def parse_label_files(self,lines):
         return_dic = {}
-        return_dic['chinese'] = lines[0]
-        return_dic['pinyin'] = Chinese2Pinyin(lines[0])
+        return_dic['chinese'] = lines[0].strip('\n')
+        return_dic['pinyin'] = Chinese2Pinyin(lines[0].strip('\n'))
 
 class primewords(DataSetBase):
     def __init__(self, dataset_dir = sys.path[0]+"/../dataset/primewords_md_2018_set1", \
@@ -161,8 +161,8 @@ class primewords(DataSetBase):
             for signle_dic in  label_ls:
                 label_name = signle_dic["file"].split('.')[0]
                 label_dic[label_name] = {
-                    'chinese':signle_dic["text"],
-                    'pinyin':Chinese2Pinyin(signle_dic["text"])
+                    'chinese':signle_dic["text"].strip('\n'),
+                    'pinyin':Chinese2Pinyin(signle_dic["text"].strip('\n'))
                 }
             return label_dic
 
