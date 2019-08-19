@@ -52,9 +52,6 @@ class DataSetBase():
             if(symbol != ''):
                 return self.list_symbol.index(symbol)
         except:
-            #import pdb
-            #pdb.set_trace()
-            print(symbol)
             return -10
         return self.SymbolNum
 
@@ -103,8 +100,6 @@ class DataSetBase():
                         continue
                     code = self.SymbolToNum(py)
                     if code == -10:
-                        #print(py)
-                        #self.label_dic.pop(file_name)
                         bad_sample = True
                         break 
                     code_ls.append(self.SymbolToNum(py))
@@ -215,18 +210,13 @@ class MagicData(DataSetBase):
 
 
 if __name__=="__main__":
-    #print(Chinese2Pinyin("你好 我是 顾家新"))
     thchs30 = thchs30() 
     MagicData = MagicData()
     primewords = primewords()
     ST_CMDS = ST_CMDS()
 
-
-
     thchs30.read_label_file() 
     MagicData.read_label_file()
     primewords.read_label_file()
     ST_CMDS.read_label_file()
-    import pdb
-    pdb.set_trace()
-    print(thchs30.label_dic)
+
