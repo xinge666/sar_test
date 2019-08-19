@@ -48,8 +48,12 @@ class DataSetBase():
         '''
         符号转为数字
         '''
-        if(symbol != ''):
-            return self.list_symbol.index(symbol)
+        try:
+            if(symbol != ''):
+                return self.list_symbol.index(symbol)
+        except:
+            import pdb
+            pdb.set_trace()
         return self.SymbolNum
 
     def get_child_file_dict(self,root_dir):
@@ -89,6 +93,9 @@ class DataSetBase():
         for file_name in self.label_dic.keys():
             code_ls = []
             for py in self.label_dic[file_name]['pinyin'].split(' '):
+                if py in """,.:;?，!。：；“‘’”？！'"
+                    """:
+                    continue
                 code_ls.append(self.SymbolToNum(py))
             self.label_dic[file_name]["code"] = code_ls
         
@@ -174,7 +181,7 @@ class MagicData(DataSetBase):
     def parse_label_file(self,labelsplit ='\t' ):
         label_dic = {}
         with open(self.label_file,'r',encoding='utf-8') as f:
-            lines = f.readlines()
+            lines = f.readlines()[1:]
             for line in lines:
                 line_ls = line.split(labelsplit)
                 file_name = line_ls[0].split('.')[0]
