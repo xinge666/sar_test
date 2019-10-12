@@ -8,7 +8,7 @@ from utils.data_set_op import Chinese2Pinyin
 from utils.dir_op import get_file_name_ls_from_dir,get_child_dir_ls_from_dir,\
     get_file_dict_for_different_type
 import json
-
+import os
 
 class DataSetBase():
     """
@@ -31,7 +31,7 @@ class DataSetBase():
         加载拼音符号列表，用于标记符号
         返回一个列表list类型变量
         '''
-        txt_obj=open(sys.path[0]+'/dict.txt','r',encoding='UTF-8') # 打开文件并读入
+        txt_obj=open('feature/dict.txt','r',encoding='UTF-8') # 打开文件并读入
         txt_text=txt_obj.read()
         txt_lines=txt_text.split('\n') # 文本分割
         list_symbol=[] # 初始化符号列表

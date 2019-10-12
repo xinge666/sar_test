@@ -13,6 +13,7 @@ def get_child_dir_ls_from_dir(file_dir):
         return dirs
 
 def get_all_files_name_ls(file_dir):
+    print(file_dir)
     file_dir_queue = [file_dir+ "/"+ dir_ for dir_ in get_child_dir_ls_from_dir(file_dir) if not dir_[0] =="." ]
     files_ls = [file_dir+"/"+ file for file in get_file_name_ls_from_dir(file_dir) if not file[0] =="." ]
     while len(file_dir_queue)>0:
